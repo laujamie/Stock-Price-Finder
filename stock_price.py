@@ -1,5 +1,4 @@
 import requests
-import json
 import matplotlib.pyplot as plt
 from matplotlib import style
 import pandas as pd
