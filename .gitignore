@@ -1,0 +1,19 @@
+# Temporary files
+*~
+.#*
+*$
+
+### virtualenv ###
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pip-selfcheck.json
+.venv
+pyvenv.cfg
+
+# Compiled files
+.py[ocd]
