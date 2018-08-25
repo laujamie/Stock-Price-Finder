@@ -1,33 +1,10 @@
 import requests
 import pandas as pd
 
-class TimeSeries(object):
+from .api_request_base import AlphaVantageRequest
+
+class TimeSeries(AlphaVantageRequest):
     """ object to access global stock data from the AlphaVantage API """
-
-    _api_url = 'https://www.alphavantage.co/query'
-    
-    def __init__(self, api_key):
-        self._api_params = {}
-        self._api_key = api_key
-
-    def _get_response(self):
-        """ general function to perform api requests """
-        resp = requests.get(url=self._api_url, params=self._api_params)
-        resp_data = resp.json()
-        data = {}
-
-        for key, val in resp_data.items():
-            if 'Error' in key:
-                return resp_data
-            if 'Time Series' in key:
-                data = val
-                break
-
-        self._api_params = {}
-        
-        stock_data = pd.DataFrame.from_dict(data, dtype=float)
-        stock_data = stock_data.iloc[:, ::-1]
-        return stock_data
 
     def get_daily(self, symbol, output_size='compact'):
         """ get daily data from api """
