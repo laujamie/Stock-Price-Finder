@@ -2,8 +2,11 @@ import requests
 import pandas as pd
 
 class TimeSeries(object):
+    """ object to access global stock data from the AlphaVantage API """
+
+    _api_url = 'https://www.alphavantage.co/query'
+    
     def __init__(self, api_key):
-        self._api_url = 'https://www.alphavantage.co/query'
         self._api_params = {}
         self._api_key = api_key
 
