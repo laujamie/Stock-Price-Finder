@@ -21,3 +21,19 @@ class DigitalCurrencies(AlphaVantageRequest):
         self._api_params['market'] = market
 
         return self._get_response()
+
+    def get_weekly(self, symbol, market):
+        self._api_params['symbol'] = symbol
+        self._api_params['function'] = 'DIGITAL_CURRENCY_WEEKLY'
+        self._api_params['apikey'] = self._api_key
+        self._api_params['market'] = market
+
+        return self._get_response()
+
+    def get_monthly(self, symbol, market):
+        self._api_params['symbol'] = symbol
+        self._api_params['function'] = 'DIGITAL_CURRENCY_MONTHLY'
+        self._api_params['apikey'] = self._api_key
+        self._api_params['market'] = market
+
+        return self._get_response()
