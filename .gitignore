@@ -16,5 +16,7 @@ pip-selfcheck.json
 pyvenv.cfg
 tcl
 
+.idea
+
 # Compiled files
 .py[ocd]
