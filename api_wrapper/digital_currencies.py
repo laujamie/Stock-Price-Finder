@@ -1,6 +1,3 @@
-import requests
-import pandas as pd
-
 from .api_request_base import AlphaVantageRequest
 
 class DigitalCurrencies(AlphaVantageRequest):
