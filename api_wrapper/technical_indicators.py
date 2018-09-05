@@ -53,4 +53,7 @@ class TechnicalIndicators(AlphavantageRequest):
 
     def get_macdext(self, symbol, interval, time_period, series_type, fastperiod=12, slowperiod=26, signalperiod=9):
         self.set_params('MACDEXT', symbol, interval, time_period, series_type)
+        self._api_params['fastperiod'] = fastperiod
+        self._api_params['slowperiod'] = slowperiod
+        self._api_params['signalperiod'] = signalperiod
         return self._get_response()
