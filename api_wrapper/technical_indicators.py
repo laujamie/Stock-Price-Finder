@@ -1,7 +1,28 @@
-from .api_request_base import AlphaVantageRequest
+import pandas as pd
+import requests
+from . import AlphaVantageRequest
 
-class TechnicalIndicators(AlphavantageRequest):
+
+class TechnicalIndicators(AlphaVantageRequest):
     """ used to get the technical indicator data from AlphaVantage """
+
+    def _get_response(self):
+        resp = requests.get(url=self._api_url, params=self._api_params)
+        resp_data = resp.json()
+        data = {}
+
+        for key, val in resp_data.items():
+            if 'Error' in key:
+                return resp_data
+            if 'Technical Analysis' in key:
+                data = val
+                break
+
+        self._api_params = {}
+
+        stock_data = pd.DataFrame.from_dict(data, dtype=float)
+        stock_data = stock_data.iloc[:, ::-1]
+        return stock_data
 
     def set_params(self, func, symbol, interval, time_period, series_type):
         self._api_params['function'] = func
