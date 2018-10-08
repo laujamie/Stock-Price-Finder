@@ -20,3 +20,5 @@ tcl
 
 # Compiled files
 .py[ocd]
+
+__pycache__
