@@ -1,6 +1,6 @@
 import pandas as pd
 import requests
-from . import AlphaVantageRequest
+from .api_request_base import AlphaVantageRequest
 
 
 class TechnicalIndicators(AlphaVantageRequest):
