@@ -6,6 +6,6 @@ if __name__ == '__main__':
 
     api_key = 'insert_api_key_here'
     t_series = TimeSeries(api_key)
-    print(t_series.get_daily('msft'))
+    print(t_series.get_daily('^GSPC'))
 
-    window.run_gui(50, 50, 500, 300, 'Stock Prices')
+    window.run_gui(0, 0, 500, 500, 'Stock Prices')
