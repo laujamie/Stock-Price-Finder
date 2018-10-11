@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 import requests
 
 def update_snp500_tickers():
-    resp = requests.get("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")
+    resp = requests.get(
+        "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")
     soup = BeautifulSoup(resp.text, 'lxml')
     table = soup.find('table', {'class': 'wikitable sortable'})
 
@@ -12,9 +13,8 @@ def update_snp500_tickers():
         ticker = row.findAll('td')[0].text
         tickers.append(ticker)
 
-    print(tickers)
-
     with open("./data/tickers.pickle", "wb") as f:
         pickle.dump(tickers, f)
 
-update_snp500_tickers()
+if __name__ == "__main__":
+    update_snp500_tickers()
