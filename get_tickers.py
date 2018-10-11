@@ -14,7 +14,7 @@ def update_snp500_tickers():
 
     print(tickers)
 
-    with open("tickers.pickle", "wb") as f:
+    with open("./data/tickers.pickle", "wb") as f:
         pickle.dump(tickers, f)
 
 update_snp500_tickers()
