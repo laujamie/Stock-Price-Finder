@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtCore import QCoreApplication, pyqtSlot
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QColor, QPainter
 from PyQt5.QtWidgets import QAction, QApplication, QWidget, QPushButton, QMenuBar, QLineEdit
 import api_wrapper
 
@@ -26,6 +26,7 @@ class Window(QWidget):
         self.home()
 
     def init_menubar(self):
+        # Create menubar buttons
         self.menubar = QMenuBar(self)
         file_menu = self.menubar.addMenu('&File')
         extract_action = QAction('&Quit', self)
