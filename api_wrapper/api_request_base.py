@@ -16,6 +16,8 @@ class AlphaVantageRequest(object):
         for key, val in resp_data.items():
             if 'Error' in key:
                 return resp_data
+            if 'Information' in key:
+                return resp_data
             if 'Time Series' in key:
                 data = val
                 break

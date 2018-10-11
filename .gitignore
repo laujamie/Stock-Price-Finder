@@ -22,3 +22,4 @@ tcl
 .py[ocd]
 
 __pycache__
+*.pkl
