@@ -3,6 +3,9 @@
 .#*
 *$
 
+# VSCode
+.vscode
+
 ### virtualenv ###
 .Python
 [Bb]in
