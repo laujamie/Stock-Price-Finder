@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtCore import QCoreApplication, pyqtSlot
 from PyQt5.QtGui import QIcon, QColor, QPainter
-from PyQt5.QtWidgets import QAction, QApplication, QWidget, QPushButton, QMenuBar, QLineEdit
+from PyQt5.QtWidgets import QAction, QApplication, QWidget, QPushButton, QMenuBar, QLineEdit, QGroupBox, QFormLayout
 import api_wrapper
 
 class Window(QWidget):
@@ -34,17 +34,27 @@ class Window(QWidget):
         extract_action.setStatusTip('Quit the app')
         extract_action.triggered.connect(QCoreApplication.instance().quit)
         file_menu.addAction(extract_action)
+        about_menu = self.menubar.addMenu('&Help')
+        extract_action = QAction('&About', self)
+        about_menu.addAction(extract_action)
 
     def init_textboxes(self):
-        self.api_box = QLineEdit(self)
-        self.api_box.move(20, self.menubar.geometry().height()+20)
-        self.api_box.resize(self.api_box.sizeHint())
-        self.stock_box = QLineEdit(self)
-        self.stock_box.move(
+        button_layout = QFormLayout()
+
+        api_box = QLineEdit(self)
+        api_box.move(20, self.menubar.geometry().height()+20)
+        api_box.resize(api_box.sizeHint())
+        stock_box = QLineEdit(self)
+        stock_box.move(
             20,
-            self.menubar.geometry().height()+40+self.api_box.geometry().height()
+            self.menubar.geometry().height()+40+api_box.geometry().height()
             )
-        self.stock_box.resize(self.stock_box.sizeHint())
+        stock_box.resize(stock_box.sizeHint())
+
+        button_layout.addRow("API Key", api_box)
+        button_layout.addRow("Stock Ticker", stock_box)
+
+        self.setLayout(button_layout)
 
     def home(self):
         btn = QPushButton('Quit', self)
