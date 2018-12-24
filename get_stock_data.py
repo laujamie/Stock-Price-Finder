@@ -7,7 +7,7 @@ import requests
 from api_wrapper import TimeSeries
 import get_tickers
 
-def get_daily_snp500(api_key, update_tickers=False):
+def get_daily_snp500(api_key, update_tickers=False, redo=False):
     """ pickle all the data from AlphaVantage for SNP500 """
     ts = TimeSeries(api_key)
 
@@ -18,6 +18,11 @@ def get_daily_snp500(api_key, update_tickers=False):
         tickers = pickle.load(f)
 
     for ticker in tickers:
+        # If not force updating, don't redownload existing files
+        if not redo and os.path.isfile('data/{}.pkl'.format(ticker)):
+            print("Pickled data for {} exists".format(ticker))
+            continue
+        
         print("Getting prices for {}".format(ticker))
         resp = ts.get_daily_adjusted(ticker)
         if type(resp) is dict:
@@ -28,16 +33,16 @@ def get_daily_snp500(api_key, update_tickers=False):
         resp.to_pickle("data/{}.pkl".format(ticker))
         time.sleep(14)
 
-def merge_snp_data(api_key, get_ticker=False, update_tickers=False):
+def merge_snp_data(api_key, get_ticker=False, update_tickers=False, force_update=False):
     """ merges all the ticker data into a df with close prices """
     if get_ticker:
-        get_daily_snp500(api_key, update_tickers)
+        get_daily_snp500(api_key, update_tickers, force_update)
 
     with open('data/tickers.pickle', "rb") as f:
         tickers = pickle.load(f)
 
     processed_tickers = []
-    res_df = None
+    res_df = pd.DataFrame()
 
     for ticker in tickers:
         if not os.path.isfile('data/{}.pkl'.format(ticker)):
@@ -46,21 +51,31 @@ def merge_snp_data(api_key, get_ticker=False, update_tickers=False):
 
         data = pd.read_pickle("data/{}.pkl".format(ticker))
         processed_tickers.append(ticker)
-        data.drop(['1. open', '2. high', '3. low', '5. volume'], inplace=true)
-        data.rename(columns={'4. close':ticker}, inplace=true)
+        to_drop = []
 
-        res_df = pd.DataFrame()
+        # Create a list of columns to drop
+        for column in data.columns:
+            if "adjusted close" not in column.lower():
+                to_drop.append(column)
+        
+        if data.empty:
+            print("{} has no stock data, deleting pickle...".format(ticker))
+            if os.path.isfile('data/{}.pkl'.format(ticker)):
+                os.remove('data/{}.pkl'.format(ticker))
+            continue
+
+        data.drop(to_drop, 1, inplace=True)
+        data.rename(columns={data.columns[0]:ticker}, inplace=True)
 
         if res_df.empty:
             res_df = data
         else:
-            temp = [res_df, data]
-            res_df = pd.join(temp, how='outer')
+            res_df = res_df.join(data, how='outer')
 
     if not res_df.empty:
-        res_df.to_pickle("data/all_stocks.pickle")
+        res_df.to_pickle("data/adj_close.pickle")
 
-    print(res_df)
+    print(res_df.tail())
         
 
 if __name__ == "__main__":
@@ -71,5 +86,7 @@ if __name__ == "__main__":
                         action='store_true', help='flag to update ticker data')
     parser.add_argument('--tickers', '-T',
                         action='store_true', help='flag to update tickers')
+    parser.add_argument('--force', '-f',
+                        action='store_true', help='force update ticker data')
     args = parser.parse_args()
-    merge_snp_data(args.api_key, args.update, args.tickers)
+    merge_snp_data(args.api_key, args.update, args.tickers, args.force)
