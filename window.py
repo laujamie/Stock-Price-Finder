@@ -19,10 +19,11 @@ class Window(QWidget):
         self.api_box = None
         self.stock_box = None
 
-        self.init_menubar()
+        self.current_grabber = api_wrapper.TimeSeries()
 
+        # Initialize the window elements
+        self.init_menubar()
         self.init_textboxes()
-        
         self.home()
 
     def init_menubar(self):
@@ -71,8 +72,11 @@ class Window(QWidget):
 
     @pyqtSlot()
     def clicked(self):
-        print('API Key: {}'.format(self.api_box.text()))
-        print('Ticker: {}'.format(self.stock_box.text()))
+        self.current_grabber.set_api_key(self.api_box.text())
+        try:
+            print(self.current_grabber.get_daily(self.stock_box.text()))
+        except api_wrapper.MissingApiKey:
+            print("Missing API Key")
 
 
 def run_gui(x, y, width, height, title, icon=None):
