@@ -1,10 +1,10 @@
 import sys
 from PyQt5.QtCore import QCoreApplication, pyqtSlot
 from PyQt5.QtGui import QIcon, QColor, QPainter
-from PyQt5.QtWidgets import QAction, QApplication, QWidget, QPushButton, QMenuBar, QLineEdit, QGroupBox, QFormLayout
+from PyQt5.QtWidgets import QMessageBox, QAction, QApplication, QWidget, QPushButton, QMenuBar, QLineEdit, QGroupBox, QFormLayout
 import api_wrapper
 
-class Window(QWidget):
+class MainWindow(QWidget):
 
     def __init__(self, x, y, width, height, title, icon=None):
         # Init for window
@@ -76,10 +76,14 @@ class Window(QWidget):
         try:
             print(self.current_grabber.get_daily(self.stock_box.text()))
         except api_wrapper.MissingApiKey:
-            print("Missing API Key")
+            buttonReply = QMessageBox.warning(self,
+                                              'Error',
+                                              'No API Key was provided',
+                                              QMessageBox.Ok,
+                                              QMessageBox.Ok)
 
 
 def run_gui(x, y, width, height, title, icon=None):
     app = QApplication(sys.argv)
-    gui = Window(x, y, width, height, title, icon)
+    gui = MainWindow(x, y, width, height, title, icon)
     sys.exit(app.exec_())
