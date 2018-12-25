@@ -41,18 +41,23 @@ class Window(QWidget):
     def init_textboxes(self):
         button_layout = QFormLayout()
 
-        api_box = QLineEdit(self)
-        api_box.move(20, self.menubar.geometry().height()+20)
-        api_box.resize(api_box.sizeHint())
-        stock_box = QLineEdit(self)
-        stock_box.move(
+        self.api_box = QLineEdit(self)
+        self.api_box.move(20, self.menubar.geometry().height()+20)
+        self.api_box.resize(self.api_box.sizeHint())
+        self.stock_box = QLineEdit(self)
+        self.stock_box.move(
             20,
-            self.menubar.geometry().height()+40+api_box.geometry().height()
+            self.menubar.geometry().height()+40+self.api_box.geometry().height()
             )
-        stock_box.resize(stock_box.sizeHint())
+        self.stock_box.resize(self.stock_box.sizeHint())
 
-        button_layout.addRow("API Key", api_box)
-        button_layout.addRow("Stock Ticker", stock_box)
+        btn = QPushButton('Fetch data', self)
+        btn.clicked.connect(self.clicked)
+
+        button_layout.addRow(" ", None)
+        button_layout.addRow("API Key", self.api_box)
+        button_layout.addRow("Stock Ticker", self.stock_box)
+        button_layout.addRow(btn)
 
         self.setLayout(button_layout)
 
@@ -63,6 +68,11 @@ class Window(QWidget):
         btn.move(self.geometry().width()-btn.geometry().width(),
                  self.geometry().height()-btn.geometry().height())
         self.show()
+
+    @pyqtSlot()
+    def clicked(self):
+        print('API Key: {}'.format(self.api_box.text()))
+        print('Ticker: {}'.format(self.stock_box.text()))
 
 
 def run_gui(x, y, width, height, title, icon=None):
