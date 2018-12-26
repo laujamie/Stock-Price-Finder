@@ -80,7 +80,6 @@ class MainWindow(QWidget):
 
             # Raise an exception if the received data is an error
             if isinstance(self.resp_data, dict):
-                self.resp_data = None
                 for key, val in self.resp_data.items():
                     if 'Error' or 'Information' in key:
                         raise api_wrapper.ResponseError(val)
@@ -90,12 +89,14 @@ class MainWindow(QWidget):
                                               'No API Key was provided',
                                               QMessageBox.Ok,
                                               QMessageBox.Ok)
+            self.resp_data = None  # reset the response data
         except api_wrapper.ResponseError as e:
             button_reply = QMessageBox.warning(self,
                                                'Error',
                                                '{}'.format(e),
                                                QMessageBox.Ok,
                                                QMessageBox.Ok)
+            self.resp_data = None  # reset the response data
 
 
 def run_gui(x, y, width, height, title, icon=None):
