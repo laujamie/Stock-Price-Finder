@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtCore import QCoreApplication, pyqtSlot
 from PyQt5.QtGui import QIcon, QColor, QPainter
-from PyQt5.QtWidgets import QMessageBox, QAction, QApplication, QWidget, QPushButton, QMenuBar, QLineEdit, QGroupBox, QFormLayout
+from PyQt5.QtWidgets import QMessageBox, QAction, QApplication, QWidget, QPushButton, QMenuBar, QLineEdit, QFormLayout
 import api_wrapper
 
 class MainWindow(QWidget):
@@ -18,6 +18,8 @@ class MainWindow(QWidget):
         self.menubar = None
         self.api_box = None
         self.stock_box = None
+
+        self.resp_data = None
 
         self.current_grabber = api_wrapper.TimeSeries()
 
@@ -74,13 +76,26 @@ class MainWindow(QWidget):
     def clicked(self):
         self.current_grabber.set_api_key(self.api_box.text())
         try:
-            print(self.current_grabber.get_daily(self.stock_box.text()))
+            self.resp_data = self.current_grabber.get_daily(self.stock_box.text())
+
+            # Raise an exception if the received data is an error
+            if isinstance(self.resp_data, dict):
+                self.resp_data = None
+                for key, val in self.resp_data.items():
+                    if 'Error' or 'Information' in key:
+                        raise api_wrapper.ResponseError(val)
         except api_wrapper.MissingApiKey:
-            buttonReply = QMessageBox.warning(self,
+            button_reply = QMessageBox.warning(self,
                                               'Error',
                                               'No API Key was provided',
                                               QMessageBox.Ok,
                                               QMessageBox.Ok)
+        except api_wrapper.ResponseError as e:
+            button_reply = QMessageBox.warning(self,
+                                               'Error',
+                                               '{}'.format(e),
+                                               QMessageBox.Ok,
+                                               QMessageBox.Ok)
 
 
 def run_gui(x, y, width, height, title, icon=None):
