@@ -1,8 +1,12 @@
 import sys
+from matplotlib import style
+import matplotlib.pyplot as plt
 from PyQt5.QtCore import QCoreApplication, pyqtSlot
 from PyQt5.QtGui import QIcon, QColor, QPainter
 from PyQt5.QtWidgets import QMessageBox, QAction, QApplication, QWidget, QPushButton, QMenuBar, QLineEdit, QFormLayout
 import api_wrapper
+
+style.use('ggplot')
 
 class MainWindow(QWidget):
 
@@ -74,6 +78,11 @@ class MainWindow(QWidget):
 
     @pyqtSlot()
     def clicked(self):
+        """ activates when the fetch data button is clicked.
+
+        todo:
+            * elegant way to exclude certain columns in the result df
+        """
         self.current_grabber.set_api_key(self.api_box.text())
         try:
             self.resp_data = self.current_grabber.get_daily(self.stock_box.text())
@@ -83,6 +92,12 @@ class MainWindow(QWidget):
                 for key, val in self.resp_data.items():
                     if 'Error' or 'Information' in key:
                         raise api_wrapper.ResponseError(val)
+
+            # Plot the data if it exists
+            self.resp_data = self.resp_data.T
+            exclude = ['5. volume']
+            self.resp_data.ix[:, self.resp_data.columns.difference(exclude)].plot()
+            plt.show()
         except api_wrapper.MissingApiKey:
             button_reply = QMessageBox.warning(self,
                                               'Error',
