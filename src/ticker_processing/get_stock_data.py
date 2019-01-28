@@ -76,17 +76,11 @@ def merge_snp_data(api_key, get_ticker=False, update_tickers=False, force_update
         res_df.to_pickle("data/adj_close.pickle")
 
     print(res_df.tail())
-        
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Get user API key')
-    parser.add_argument('api_key', type=str,
-                        help='a string with your AlphaVantage API Key')
-    parser.add_argument('--update', '-U',
-                        action='store_true', help='flag to update ticker data')
-    parser.add_argument('--tickers', '-T',
-                        action='store_true', help='flag to update tickers')
-    parser.add_argument('--force', '-f',
-                        action='store_true', help='force update ticker data')
-    args = parser.parse_args()
-    merge_snp_data(args.api_key, args.update, args.tickers, args.force)
+def create_correlation():
+    """ create a correlation table of the adj close prices """
+    with open('data/adj_close.pickle') as f:
+        df = pickle.load(f)
+    
+    df_corr = df.corr()
+    df_corr.to_csv('data/corr.csv')
