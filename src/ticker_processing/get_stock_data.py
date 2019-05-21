@@ -5,7 +5,7 @@ import time
 import pandas as pd
 import requests
 from api_wrapper import TimeSeries
-import get_tickers
+from . import get_tickers
 
 def get_daily_snp500(api_key, update_tickers=False, redo=False):
     """ pickle all the data from AlphaVantage for SNP500 """
@@ -22,7 +22,7 @@ def get_daily_snp500(api_key, update_tickers=False, redo=False):
         if not redo and os.path.isfile('data/{}.pkl'.format(ticker)):
             print("Pickled data for {} exists".format(ticker))
             continue
-        
+
         print("Getting prices for {}".format(ticker))
         resp = ts.get_daily_adjusted(ticker)
         if type(resp) is dict:
@@ -57,7 +57,7 @@ def merge_snp_data(api_key, get_ticker=False, update_tickers=False, force_update
         for column in data.columns:
             if "adjusted close" not in column.lower():
                 to_drop.append(column)
-        
+
         if data.empty:
             print("{} has no stock data, deleting pickle...".format(ticker))
             if os.path.isfile('data/{}.pkl'.format(ticker)):
@@ -81,6 +81,6 @@ def create_correlation():
     """ create a correlation table of the adj close prices """
     with open('data/adj_close.pickle') as f:
         df = pickle.load(f)
-    
+
     df_corr = df.corr()
     df_corr.to_csv('data/corr.csv')

@@ -1,1 +1,1 @@
-from window import run_gui
+from .window import run_gui

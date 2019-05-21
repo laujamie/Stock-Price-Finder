@@ -1,3 +1,4 @@
+import argparse
 import sys
 from window_elements import window
 from ticker_processing import get_stock_data
